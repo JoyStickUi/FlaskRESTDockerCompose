@@ -1,0 +1,36 @@
+version: '3.3'
+services:
+ web:
+  build:
+   context: ./FlaskREST
+   dockerfile: ../web.Dockerfile
+  volumes:
+   - ./FlaskREST:/var/www/app
+  links:
+   - mysql
+  ports:
+   - "8000:5000"
+  entrypoint: python3 /var/www/app/app.py
+
+ mysql:
+  image: mysql:5.7
+  ports:
+   - 33061:3306
+  environment:
+   - MYSQL_HOST=mysql
+   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_DATABASE=rest
+   - MYSQL_PORT=3306
+  volumes:
+   - ./mysql:/var/lib/mysql
+
+ phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  environment:
+   - PMA_HOST=mysql
+   - PMA_USER=root
+   - PMA_PASSWORD=root
+  links:
+   - mysql
+  ports:
+   - 8080:80
